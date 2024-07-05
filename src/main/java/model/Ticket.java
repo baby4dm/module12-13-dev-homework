@@ -8,6 +8,9 @@ import java.sql.*;
 @Entity
 @Table(name = "ticket")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,10 +18,14 @@ public class Ticket {
     private Long id;
     @Column(name = "created_at")
     private Timestamp createdAt;
-    @Column(name = "client_id")
-    private Long clientId;
-    @Column(name = "from_planet_id")
-    private String fromPlanetId;
-    @Column(name = "to_planet_id")
-    private String toPlanetId;
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+    @ManyToOne
+    @JoinColumn(name = "from_planet_id", nullable = false)
+    private Planet fromPlanet;
+    @ManyToOne
+    @JoinColumn(name = "to_planet_id", nullable = false)
+    private Planet toPlanet;
+
 }

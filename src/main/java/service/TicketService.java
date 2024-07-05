@@ -4,36 +4,43 @@ import config.*;
 import model.*;
 import org.hibernate.*;
 
-public class PlanetService {
+import java.sql.*;
+import java.time.*;
+
+public class TicketService {
     private SessionFactory sessionFactory = HibernateUtil.getInstance().getSessionFactory();
-    public String save(Planet planet){
-        try (Session session = sessionFactory.openSession()) {
+
+    public long save(Ticket ticket){
+        try (Session session = sessionFactory.openSession()){
             Transaction transaction = session.beginTransaction();
-            session.persist(planet);
+            session.persist(ticket);
             transaction.commit();
         }
-        return planet.getId();
+        return ticket.getId();
     }
 
-    public Planet findById(String id){
+    public Ticket findById(Long id){
         try (Session session = sessionFactory.openSession()){
-            return session.find(Planet.class, id);
+            return session.find(Ticket.class, id);
         }
     }
 
-    public void delete(Planet planet){
+    public void delete(Ticket ticket){
         try (Session session = sessionFactory.openSession()){
             Transaction transaction = session.beginTransaction();
-            session.remove(planet);
+            session.remove(ticket);
             transaction.commit();
         }
     }
 
-    public void update(Long id, String name){
+    public void update(Long id, Client client, Planet from, Planet to){
         try (Session session = sessionFactory.openSession()){
             Transaction transaction = session.beginTransaction();
-            Planet foundedPlanet = session.find(Planet.class, id);
-            foundedPlanet.setName(name);
+            Ticket ticket = session.find(Ticket.class, id);
+            ticket.setClient(client);
+            ticket.setFromPlanet(from);
+            ticket.setToPlanet(to);
+            ticket.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             transaction.commit();
         }
     }
